@@ -3,298 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flat Cafe Stream Overlay - Gorgeous End of Year</title>
+    <title>Flat Cafe Stream Overlay - Final Ver</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;900&family=Yuji+Syuku&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@800;900&family=Yuji+Syuku&display=swap" rel="stylesheet">
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { width: 1920px; height: 1080px; background-color: transparent; overflow: hidden; font-family: 'M PLUS Rounded 1c', sans-serif; }
+        
+        /* 全体コンテナ */
+        .overlay-container { position: relative; width: 100%; height: 100%; }
 
-        body {
-            width: 1920px;
-            height: 1080px;
-            background-color: transparent;
-            overflow: hidden;
-            font-family: 'M PLUS Rounded 1c', sans-serif;
-        }
-
-        /* 全体のコンテナ */
-        .overlay-container {
-            position: relative;
-            width: 100%;
-            height: 100%;
-        }
-
-        /* --- 豪華エフェクト：キラキラ紙吹雪 --- */
-        .confetti {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background-color: #ffd700; /* ゴールド */
-            opacity: 0.7;
-            border-radius: 2px;
-            animation: confetti-fall linear infinite;
-            z-index: 0; /* 最背面 */
-        }
-        .confetti:nth-child(2n) { background-color: #ff4e50; width: 8px; height: 12px; } /* 赤 */
-        .confetti:nth-child(3n) { background-color: #fff; width: 12px; height: 8px; } /* 白 */
-
-        @keyframes confetti-fall {
-            0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(1100px) rotate(720deg); opacity: 0; }
-        }
-
-        /* --- ゲーム画面フレーム (豪華版) --- */
+        /* --- ゲーム画面フレーム --- */
         .game-frame-deco {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            right: 10px;
-            bottom: 180px; /* 下部バーのスペース */
-            /* しめ縄風の豪華な枠線 (擬似的な表現) */
-            border: 15px solid transparent;
-            border-image: linear-gradient(to bottom right, #d4af37, #f9d423, #d4af37) 1;
-            box-shadow: 
-                inset 0 0 20px rgba(212, 175, 55, 0.5), /* 内側の金色の光 */
-                0 0 20px rgba(212, 175, 55, 0.3); /* 外側の光 */
-            border-radius: 20px; /* 角丸はborder-imageと相性が悪いので、擬似的に */
-            /* 角丸を表現するためのクリップパス */
-            clip-path: polygon(
-                20px 0, calc(100% - 20px) 0, 100% 20px, 
-                100% calc(100% - 20px), calc(100% - 20px) 100%, 
-                20px 100%, 0 calc(100% - 20px), 0 20px
-            );
-            z-index: 1;
-            pointer-events: none; /* クリックを透過 */
+            position: absolute; top: 15px; left: 15px; right: 15px; bottom: 190px; /* 下部バーとの隙間を確保 */
+            border: 10px solid #d4af37; /* 金枠のみシンプルに */
+            border-radius: 15px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+            z-index: 1; pointer-events: none;
         }
-        /* 左上と右上の水引飾り（CSSで簡易表現） */
-        .mizuhiki-deco {
-            position: absolute;
-            width: 100px;
-            height: 100px;
-            z-index: 2;
+
+        /* --- 右上の絵馬風飾り --- */
+        .top-deco-ema {
+            position: absolute; top: 35px; right: 35px;
+            background: linear-gradient(to bottom, #fff, #f0e68c);
+            border: 4px solid #d4af37;
+            clip-path: polygon(50% 0%, 100% 25%, 100% 100%, 0% 100%, 0% 25%);
+            padding: 35px 25px 15px 25px; text-align: center; transform: rotate(5deg);
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.3); z-index: 5;
         }
-        .mizuhiki-deco.left { top: 0; left: 0; background: radial-gradient(circle at top left, #ff4e50, transparent 60%), radial-gradient(circle at top left, gold, transparent 50%); opacity: 0.8; }
-        .mizuhiki-deco.right { top: 0; right: 0; background: radial-gradient(circle at top right, #ff4e50, transparent 60%), radial-gradient(circle at top right, gold, transparent 50%); opacity: 0.8; }
+        .ema-text-main { font-family: 'Yuji Syuku', serif; font-size: 28px; color: #b71c1c; margin-bottom: 5px; }
+        .ema-text-sub { font-size: 16px; color: #333; font-weight: 700; }
+        .top-deco-ema::before {
+            content: ''; position: absolute; top: -20px; left: 50%; transform: translateX(-50%);
+            width: 8px; height: 30px; background: #b71c1c; border-radius: 4px; z-index: -1;
+        }
 
-
-        /* --- 下部の情報バー (豪華版) --- */
+        /* --- 下部バー (高さ調整) --- */
         .bottom-bar {
-            position: absolute;
-            bottom: 15px;
-            left: 15px;
-            right: 15px;
-            height: 160px;
-            /* よりリッチな赤金グラデーション */
-            background: linear-gradient(135deg, #b71c1c, #ff4e50, #f9d423, #d4af37);
-            border-radius: 25px;
-            display: flex;
-            align-items: center;
-            padding: 0 50px;
-            /* 豪華な金色の枠線と影 */
+            position: absolute; bottom: 20px; left: 20px; right: 20px; height: 160px;
+            background: linear-gradient(90deg, #b71c1c 0%, #ff4e50 30%, #f9d423 100%);
+            border-radius: 20px; display: flex; align-items: center; padding: 0 40px;
             border: 5px solid #fff;
-            box-shadow: 
-                0 0 0 5px #d4af37, /* 外側の金の枠 */
-                0 10px 25px rgba(0,0,0,0.5);
+            box-shadow: 0 0 0 5px #d4af37, 0 10px 25px rgba(0,0,0,0.5);
             z-index: 10;
-            overflow: hidden; /* はみ出た装飾を隠す */
-        }
-
-        /* 和柄（青海波と麻の葉のミックス）のアクセント背景 */
-        .pattern-bg-gorgeous {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0.2;
-            /* 麻の葉模様のSVGパターン（データURI） */
-            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 0L0 20L20 40L40 20L20 0zM20 10L10 20L20 30L30 20L20 10z' fill='%23ffffff' fill-opacity='0.5'/%3E%3C/svg%3E");
-            background-size: 60px 60px;
-            mix-blend-mode: overlay;
-            z-index: 0;
-        }
-
-        /* テキスト情報エリア */
-        .info-area {
-            position: relative;
-            z-index: 2;
-            color: #fff;
-            /* 金色の縁取り文字 */
-            text-shadow: 
-                2px 2px 0px #b71c1c,
-                -2px -2px 0px #d4af37,
-                2px -2px 0px #d4af37,
-                -2px 2px 0px #d4af37,
-                4px 4px 10px rgba(0,0,0,0.4);
-            flex-grow: 1;
-            padding-left: 20px;
-        }
-
-        .stream-title {
-            font-family: 'Yuji Syuku', serif; /* 筆文字風フォント */
-            font-size: 42px; /* サイズアップ */
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
+            overflow: visible; /* キャラを少しはみ出させるためvisible */
         }
         
-        /* 年末年始スタンプ */
-        .stamp {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 60px;
-            height: 60px;
-            background: #fff;
-            border: 3px solid #b71c1c;
-            border-radius: 50%;
-            color: #b71c1c;
-            font-family: 'Yuji Syuku', serif;
-            font-size: 24px;
-            transform: rotate(-15deg);
-            box-shadow: 3px 3px 0 rgba(0,0,0,0.2);
-            margin-right: 15px;
-            text-shadow: none;
+        /* 背景パターン */
+        .pattern-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.15;
+            background-image: repeating-linear-gradient(45deg, #fff 0px, #fff 2px, transparent 2px, transparent 10px);
+            z-index: 0; pointer-events: none; border-radius: 15px;
         }
 
-        .game-title-box {
-            background: linear-gradient(to right, #fff, #fff8e1);
-            border: 3px solid #d4af37;
-            display: inline-block;
-            padding: 5px 20px;
-            border-radius: 50px;
-            box-shadow: 3px 3px 10px rgba(0,0,0,0.2);
+        /* --- 情報エリア（左側） --- */
+        .info-area {
+            position: relative; z-index: 2; flex-grow: 1;
+            display: flex; flex-direction: column; justify-content: center;
         }
 
-        .game-title {
-            font-size: 26px;
+        /* 配信タイトル（小さめに上に乗せる） */
+        .stream-sub-title {
+            color: #fff; font-size: 24px; font-weight: 700;
+            display: flex; align-items: center; gap: 10px; margin-bottom: 5px;
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+        }
+        .badge { background: #fff; color: #b71c1c; padding: 2px 10px; border-radius: 4px; font-size: 18px; }
+
+        /* ゲームタイトル（超巨大化） */
+        .game-title-main {
+            font-size: 60px; /* サイズ大幅アップ */
             font-weight: 900;
-            color: #b71c1c;
-            text-shadow: none;
+            color: #fff;
+            line-height: 1.1;
+            text-shadow: 4px 4px 0 #b71c1c, -2px -2px 0 #d4af37; /* 強めの縁取り */
+            white-space: nowrap;
         }
 
-        /* キャラクターエリア (変更なし) */
+        /* --- 右側のエリア（SNS + キャラ） --- */
+        .right-area {
+            position: relative; z-index: 10;
+            display: flex; align-items: center; gap: 40px;
+            height: 100%;
+        }
+
+        /* SNSローテーション表示 */
+        .social-box {
+            background: rgba(0,0,0,0.8); border: 2px solid #fff; color: #fff;
+            padding: 8px 25px; border-radius: 50px;
+            font-size: 22px; font-weight: 700;
+            display: flex; align-items: center; gap: 10px;
+            min-width: 320px; justify-content: center;
+            box-shadow: 3px 3px 10px rgba(0,0,0,0.3);
+        }
+        .social-text { transition: opacity 0.5s ease, transform 0.5s ease; white-space: nowrap; }
+        .fade-out { opacity: 0; transform: translateY(10px); }
+        .fade-in { opacity: 1; transform: translateY(0); }
+
+        /* --- キャラクター調整 --- */
         .characters-area {
+            display: flex; gap: -20px; align-items: flex-end;
+            /* 重要: バーの中に収まるよう位置調整 */
             position: relative;
-            z-index: 12;
-            display: flex;
-            gap: -25px;
-            align-items: flex-end;
-            margin-right: -30px;
-            bottom: 35px;
+            bottom: -10px; /* 下部バーの底辺に合わせる */
         }
 
         .char-img {
-            width: 200px; /* 少しサイズアップ */
+            width: 170px; /* 少しサイズ調整 */
             height: auto;
-            /* 金色の光彩を追加 */
-            filter: drop-shadow(0px 0px 10px rgba(255, 215, 0, 0.6)) drop-shadow(4px 4px 0px rgba(0,0,0,0.3));
-            transition: transform 0.3s ease;
+            filter: drop-shadow(3px 3px 0px rgba(0,0,0,0.2));
+            /* 下からひょっこり感を出すため、transform-originを下部に */
+            transform-origin: bottom center;
         }
         
-        @keyframes bounce-gorgeous {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-15px) scale(1.05); } /* 動きを大きく */
+        /* ぴょこぴょこアニメーション（控えめに） */
+        @keyframes bounce-gentle {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
         }
-
-        .char-img:nth-child(1) { animation: bounce-gorgeous 3s infinite ease-in-out; animation-delay: 0s; z-index: 3; }
-        .char-img:nth-child(2) { animation: bounce-gorgeous 3.2s infinite ease-in-out; animation-delay: 0.5s; z-index: 2; }
-        .char-img:nth-child(3) { animation: bounce-gorgeous 2.8s infinite ease-in-out; animation-delay: 1s; z-index: 1; }
-
-        /* 装飾：右上の豪華な絵馬風バッジ */
-        .top-deco-ema {
-            position: absolute;
-            top: 30px;
-            right: 30px;
-            background: linear-gradient(to bottom, #fff, #f0e68c); /* 木目っぽい色 */
-            border: 5px solid #d4af37; /* 金枠 */
-            /* 絵馬の形 */
-            clip-path: polygon(50% 0%, 100% 25%, 100% 100%, 0% 100%, 0% 25%);
-            padding: 40px 30px 20px 30px; /* 上を広めに */
-            text-align: center;
-            transform: rotate(5deg);
-            box-shadow: 5px 5px 15px rgba(0,0,0,0.3);
-            z-index: 5;
-        }
-        .ema-text-main {
-            font-family: 'Yuji Syuku', serif;
-            font-size: 32px;
-            color: #b71c1c;
-            text-shadow: 1px 1px 0 #fff;
-            margin-bottom: 5px;
-        }
-        .ema-text-sub {
-            font-size: 18px;
-            color: #333;
-            font-weight: 700;
-        }
-        /* 紐 */
-        .top-deco-ema::before {
-            content: '';
-            position: absolute;
-            top: -20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 10px;
-            height: 30px;
-            background: #b71c1c;
-            border-radius: 5px;
-            z-index: -1;
-        }
+        .char-img:nth-child(1) { animation: bounce-gentle 3s infinite ease-in-out; z-index: 3; }
+        .char-img:nth-child(2) { animation: bounce-gentle 3.2s infinite ease-in-out 0.5s; z-index: 2; }
+        .char-img:nth-child(3) { animation: bounce-gentle 2.8s infinite ease-in-out 1s; z-index: 1; }
 
     </style>
 </head>
 <body>
 
     <div class="overlay-container">
-        
-        <script>
-            for(let i=0; i<50; i++){
-                let confetti = document.createElement('div');
-                confetti.className = 'confetti';
-                confetti.style.left = Math.random() * 100 + '%';
-                confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
-                confetti.style.animationDelay = (Math.random() * 5) + 's';
-                document.querySelector('.overlay-container').appendChild(confetti);
-            }
-        </script>
-
         <div class="game-frame-deco"></div>
-        <div class="mizuhiki-deco left"></div>
-        <div class="mizuhiki-deco right"></div>
-
 
         <div class="top-deco-ema">
-            <div class="ema-text-main">開運！</div>
-            <div class="ema-text-sub">年末スペシャル</div>
+            <div class="ema-text-main">開運</div>
+            <div class="ema-text-sub">年末SP</div>
         </div>
 
         <div class="bottom-bar">
-            <div class="pattern-bg-gorgeous"></div>
+            <div class="pattern-bg"></div>
             
             <div class="info-area">
-                <div class="stream-title">
-                    <div class="stamp">迎春</div>
+                <div class="stream-sub-title">
+                    <span class="badge">LIVE</span>
                     ふらっとcafe 年末大掃除SP
                 </div>
-                <div class="game-title-box">
-                    <span class="game-title">PowerWash Simulator 2</span>
+                <div class="game-title-main">
+                    PowerWash Simulator 2
                 </div>
             </div>
 
-            <div class="characters-area">
-                <img src="./cat_hat.png" alt="Character 1" class="char-img">
-                <img src="./black_hair.png" alt="Character 2" class="char-img">
-                <img src="./white_glasses.png" alt="Character 3" class="char-img">
+            <div class="right-area">
+                <div class="social-box">
+                    <span>𝕏</span>
+                    <span id="social-display" class="social-text">@flca_official</span>
+                </div>
+
+                <div class="characters-area">
+                    <img src="./cat_hat.png" alt="Character 1" class="char-img">
+                    <img src="./black_hair.png" alt="Character 2" class="char-img">
+                    <img src="./white_glasses.png" alt="Character 3" class="char-img">
+                </div>
             </div>
         </div>
     </div>
 
+    <script>
+        const accounts = [
+            { label: "公式", id: "@flca_official" },
+            { label: "若凪", id: "@wakanagi_flca" }
+        ];
+        let currentIndex = 0;
+        const displayElement = document.getElementById('social-display');
+
+        setInterval(() => {
+            displayElement.classList.remove('fade-in');
+            displayElement.classList.add('fade-out');
+            setTimeout(() => {
+                currentIndex = (currentIndex + 1) % accounts.length;
+                const nextAccount = accounts[currentIndex];
+                displayElement.textContent = `${nextAccount.label}: ${nextAccount.id}`;
+                displayElement.classList.remove('fade-out');
+                displayElement.classList.add('fade-in');
+            }, 500);
+        }, 5000);
+    </script>
 </body>
 </html>
